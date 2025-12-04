@@ -1,0 +1,7 @@
+streamlit
+llama-index-core
+llama-index-llms-gemini
+llama-index-embeddings-huggingface
+llama-index-vector-stores-pinecone
+pinecone-client
+python-dotenv
