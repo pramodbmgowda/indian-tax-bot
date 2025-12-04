@@ -1,58 +1,67 @@
 import os
+import time
+import requests
+from bs4 import BeautifulSoup
 
-
+# Setup Data Directory
 if not os.path.exists("data"):
     os.makedirs("data")
 
-# We are creating a "Mock" database of 4 critical sections of Indian Tax Law.
-# In the real world, this text comes from your web spider.
+def clean_text(html):
+    soup = BeautifulSoup(html, "html.parser")
+    # IndianKanoon stores the actual law text inside a div class called 'judgments' or 'doc_content'
+    # We strip out the ads and navigation
+    content = soup.find('div', class_='doc_content')
+    if content:
+        return content.get_text(separator="\n").strip()
+    return soup.get_text(separator="\n").strip()
 
-laws = {
-    "Section_10_13A_HRA.txt": """
-    SECTION 10(13A): HOUSE RENT ALLOWANCE (HRA)
-    (1) Any special allowance specifically granted to an assessee by his employer to meet expenditure actually incurred on payment of rent 
-    in respect of residential accommodation occupied by him, is exempt from tax to the extent of the least of the following:
-    (a) Actual HRA received;
-    (b) Rent paid in excess of 10% of salary;
-    (c) 50% of salary (for metro cities) or 40% (for non-metro).
-    """,
+def scrape_indian_kanoon():
+    print("🚀 Initializing Scraper (Target: IndianKanoon)...")
     
-    "Section_24_Home_Loan.txt": """
-    SECTION 24: DEDUCTIONS FROM INCOME FROM HOUSE PROPERTY
-    Income chargeable under the head "Income from house property" shall be computed after making the following deductions, namely:—
-    (a) a sum equal to thirty per cent of the annual value;
-    (b) where the property has been acquired, constructed, repaired, renewed or reconstructed with borrowed capital, the amount of any interest payable on such capital.
-    Provided that in respect of self-occupied property, the maximum deduction for interest on borrowed capital shall be 2,00,000 rupees.
-    """,
-
-    "Section_80D_Health_Insurance.txt": """
-    SECTION 80D: DEDUCTION IN RESPECT OF HEALTH INSURANCE PREMIA
-    (1) In computing the total income of an assessee, there shall be deducted the whole of the amount paid to keep in force an insurance on the health of the assessee or his family.
-    (2) The aggregate of the sum referred to in sub-section (1) shall not exceed:
-    (a) 25,000 rupees for oneself, spouse, and dependent children;
-    (b) 50,000 rupees if the person specified is a senior citizen (above 60 years).
-    """,
+    # We define the URLs for the specific "Gold Standard" sections manually 
+    targets = [
+        {"section": "Section_80C", "url": "https://indiankanoon.org/doc/1447833/"},
+        {"section": "Section_80D", "url": "https://indiankanoon.org/doc/1429896/"},
+        {"section": "Section_10_HRA", "url": "https://indiankanoon.org/doc/1183311/"},
+        {"section": "Section_24_House_Prop", "url": "https://indiankanoon.org/doc/170997/"},
+        {"section": "Section_139_Returns", "url": "https://indiankanoon.org/doc/1066741/"}
+    ]
     
-    "Section_80C_Investments.txt": """
-    SECTION 80C: DEDUCTIONS FOR INVESTMENTS
-    The total deduction available under this section is limited to 1,50,000 rupees per annum.
-    Eligible investments include:
-    - Life Insurance Premium (LIC)
-    - Public Provident Fund (PPF)
-    - Employees' Provident Fund (EPF)
-    - Equity Linked Savings Scheme (ELSS)
-    - Principal repayment of housing loan.
-    """
-}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
+    }
 
-def generate_library():
-    print("Building Legal Library...")
-    for filename, text in laws.items():
-        path = os.path.join("data", filename)
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(text.strip())
-        print(f"-> Indexed: {filename}")
-    print("Library construction complete.")
+    print(f"📋 Found {len(targets)} critical sections to scrape.")
+
+    for i, target in enumerate(targets):
+        title = target['section']
+        url = target['url']
+        
+        print(f"   ⬇️ [{i+1}/{len(targets)}] Downloading: {title}...")
+        
+        try:
+            response = requests.get(url, headers=headers)
+            
+            if response.status_code == 200:
+                content = clean_text(response.content)
+                
+                # Save to file
+                filename = f"data/{title}.txt"
+                with open(filename, "w", encoding="utf-8") as f:
+                    f.write(f"SOURCE: {url}\n")
+                    f.write(f"SECTION: {title}\n\n")
+                    f.write(content)
+            else:
+                print(f"      ❌ Failed (Status {response.status_code})")
+
+        except Exception as e:
+            print(f"      ❌ Error: {e}")
+        
+        # CRITICAL: Be polite. IndianKanoon bans IPs that scrape too fast.
+        time.sleep(2) 
+
+    print("🎉 Scraping Complete! Data saved in /data folder.")
 
 if __name__ == "__main__":
-    generate_library()
+    scrape_indian_kanoon()
