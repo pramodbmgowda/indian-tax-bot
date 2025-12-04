@@ -1,0 +1,6 @@
+SECTION 10(13A): HOUSE RENT ALLOWANCE (HRA)
+    (1) Any special allowance specifically granted to an assessee by his employer to meet expenditure actually incurred on payment of rent 
+    in respect of residential accommodation occupied by him, is exempt from tax to the extent of the least of the following:
+    (a) Actual HRA received;
+    (b) Rent paid in excess of 10% of salary;
+    (c) 50% of salary (for metro cities) or 40% (for non-metro).

@@ -1,0 +1,8 @@
+SECTION 80C: DEDUCTIONS FOR INVESTMENTS
+    The total deduction available under this section is limited to 1,50,000 rupees per annum.
+    Eligible investments include:
+    - Life Insurance Premium (LIC)
+    - Public Provident Fund (PPF)
+    - Employees' Provident Fund (EPF)
+    - Equity Linked Savings Scheme (ELSS)
+    - Principal repayment of housing loan.

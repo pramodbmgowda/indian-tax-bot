@@ -1,0 +1,5 @@
+SECTION 80D: DEDUCTION IN RESPECT OF HEALTH INSURANCE PREMIA
+    (1) In computing the total income of an assessee, there shall be deducted the whole of the amount paid to keep in force an insurance on the health of the assessee or his family.
+    (2) The aggregate of the sum referred to in sub-section (1) shall not exceed:
+    (a) 25,000 rupees for oneself, spouse, and dependent children;
+    (b) 50,000 rupees if the person specified is a senior citizen (above 60 years).
