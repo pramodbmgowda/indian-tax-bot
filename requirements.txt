@@ -5,3 +5,6 @@ llama-index-embeddings-huggingface
 llama-index-vector-stores-pinecone
 pinecone-client
 python-dotenv
+beautifulsoup4
+requests
+curl_cffi
